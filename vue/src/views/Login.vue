@@ -9,7 +9,7 @@
             欢迎登陆管理系统
           </div>
           <el-form-item prop="username">
-            <el-input size="small" v-model="data.form.username" placeholder="请输入用户名"
+            <el-input size="large" v-model="data.form.username" placeholder="请输入用户名"
                       prefix-icon="User"></el-input>
           </el-form-item>
           <el-form-item prop="password">
