@@ -8,8 +8,8 @@
       </div>
       <div style="flex: 1"></div>
       <div style="width: fit-content;display:flex;align-items: center;padding-right:10px  ">
-        <img src="https://tse3-mm.cn.bing.net/th/id/OIP-C.mWqbERralY6bvkWEQuhAjwHaIQ?w=152&h=180&c=7&r=0&o=5&pid=1.7"
-             alt="" style="width: 40px;height: 40px">
+        <img :src="data.user.avatar || 'https://tse3-mm.cn.bing.net/th/id/OIP-C.mWqbERralY6bvkWEQuhAjwHaIQ?w=152&h=180&c=7&r=0&o=5&pid=1.7'" alt=""
+             style="width: 40px;height: 40px;border-radius: 50%">
         <span style="color: white;margin-left: 5px">{{ data.user.name}}</span>
       </div>
     </div>
