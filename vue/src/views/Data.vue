@@ -1,51 +1,141 @@
 <template>
   <div>
-    <div class="card" style="margin-bottom: 5px">
+    <el-row :gutter="10">
+      <el-col :span="12" style="margin-bottom: 10px">
+        <div class="card" style="padding: 20px;height:400px;" id="bar"></div>
+      </el-col>
+      <el-col :span="12" style="margin-bottom: 10px">
+        <div class="card" style="padding: 20px;height:400px;" id="line"></div>
+      </el-col>
+      <el-col :span="12" style="margin-bottom: 10px">
+        <div class="card" style="padding: 20px;height:400px;" id="pie"></div>
+      </el-col>
+    </el-row>
 
-      <el-input style="width: 240px" v-model="data.name" placeholder="请输入名称查询" prefix-icon="Search"></el-input>
-      <el-button type="primary">查 询</el-button>
-      <el-button type="warning">重 置</el-button>
-    </div>
-    <div class="card" style="margin-bottom: 5px">
-      <el-button type="primary">新 增</el-button>
-      <el-button type="warning">批量删除</el-button>
-      <el-button type="info">导 入</el-button>
-      <el-button type="success">导 出</el-button>
-    </div>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
 
-    <div class="card" style="margin-bottom: 5px">
-      <el-table :data="data.tableData" stripe>
-        <el-table-column label="日期" prop="date"/>
-        <el-table-column label="名称" prop="name"/>
-        <el-table-column label="地址" prop="address"/>
-      </el-table>
-      <div style="margin-top:10px ">
-          <el-pagination
-              v-model:current-page="data.pageNum"
-              v-model:page-size="data.pageSize"
-              :page-sizes="[5, 10, 15, 20]"
-              background
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="data.total"
-          />
-      </div>
-    </div>
   </div>
 </template>
 <script setup>
-import {reactive} from "vue";
+import {reactive, onMounted} from "vue";
+import * as echarts from 'echarts';
+import request from "@/untils/request.js";
 
-const data = reactive({
-  name: null,
-  tableData:[
-    {id:1,date:'2025-1-23',name:'Zywoo',address:'French'},
-    {id:2,date:'2025-1-24',name:'Donk',address:'Russia'},
-    {id:2,date:'2025-1-25',name:'Niko',address:'PoHei'},
-  ],
-  pageNum:1,
-  pageSize:10,
-  total:47
-})
+
+const barOption = {
+  title: {
+    text: '各部门员工数量'
+  },
+  tooltip: {},
+  legend: {
+    trigger: 'item'
+  },
+  xAxis: {
+    data: []
+  },
+  yAxis: {},
+  series: [
+    {
+      name: '人数',
+      type: 'bar',
+      data: [],
+      itemStyle: {
+        color: function (params) {
+          let colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+          return colors[params.dataIndex % colors.length];
+        }
+      }
+    },
+  ]
+};
+
+const lineOption = {
+  title: {
+    text: '近七天发布文章的数量'
+  },
+  tooltip: {},
+  legend: {
+    trigger: 'item'
+  },
+  xAxis: {
+    data: []
+  },
+  yAxis: {},
+  series: [
+    {
+      name: '发布数量',
+      type: 'line',
+      data: [],
+      smooth: true,
+    },
+  ]
+};
+
+const pieOption = {
+  title: {
+    text: '部门员工数量占比',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: '员工数量',
+      type: 'pie',
+      radius: '50%',
+      data: [],
+      center: ['50%', '50%'],
+      label: {
+        formatter: '{b}: {@2012} ({d}%)'
+      },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0,0,0,0.5)'
+        }
+      }
+    }
+  ]
+}
+
+const data = reactive({})
+// 初始化图表
+onMounted(() => {
+
+      // 获取图表实例
+      const barChart = echarts.init(document.getElementById('bar'));
+
+      request.get('/barData').then(res => {
+        barOption.xAxis.data = res.data.department;
+        barOption.series[0].data = res.data.count;
+        // 设置图表数据
+        barChart.setOption(barOption);
+      })
+
+      const lineChart = echarts.init(document.getElementById('line'));
+      request.get('/lineData').then(res => {
+        lineOption.xAxis.data = res.data.date;
+        lineOption.series[0].data = res.data.count;
+        // 设置图表数据
+        lineChart.setOption(lineOption);
+      })
+
+      const pieChart = echarts.init(document.getElementById('pie'));
+      request.get('/pieData').then(res => {
+        pieOption.series[0].data = res.data;
+        // 设置图表数据
+        pieChart.setOption(pieOption);
+      })
+    }
+)
+
+
 </script>
 
 <style scoped>

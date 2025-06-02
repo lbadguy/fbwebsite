@@ -4,21 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springboot.Mapper.EmployeeMapper">
     <select id="selectAll" resultType="com.example.springboot.entity.Employee" >
-        select * from employee
+        select employee.*,department.name as departmentName from employee
+        left join department on employee.department_id = department.id
         <where>
-            <if test="name != null">name like concat('%',#{name},'%')</if>
+            <if test="name != null">employee.name like concat('%',#{name},'%')</if>
         </where>
-        order by id desc
+        order by employee.id desc
     </select>
 
     <insert id="insert" parameterType="com.example.springboot.entity.Employee">
-        insert into `employee` (username, password, role,name, sex, no, age, description,avatar)
-        values (#{username},#{password},#{role},#{name}, #{sex},#{no}, #{age},#{description},#{avatar})
+        insert into `employee` (username, password, role,name, sex, no, age, description,department_id,avatar)
+        values (#{username},#{password},#{role},#{name}, #{sex},#{no}, #{age},#{description},#{departmentId},#{avatar})
     </insert>
 
     <update id="updateById" parameterType="com.example.springboot.entity.Employee">
         update `employee` set username = #{username},password = #{password},role = #{role}, name = #{name},sex = #{sex}, no = #{no},age=#{age},
-        description = #{description},avatar = #{avatar}
+        description = #{description},department_id=#{departmentId},avatar = #{avatar}
         where id = #{id}
     </update>
+
+    <select id="selectByName" resultType="com.example.springboot.entity.Department">
+        select * from department where name = #{name}
+    </select>
 </mapper>

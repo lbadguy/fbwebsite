@@ -5,6 +5,30 @@ public class Employee extends Account{
     private String username;
     private String password;
     private String role;
+    private String name;
+    private String sex;
+    private String no;
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    private Integer age;
+    private String description;
+    private Integer departmentId;
+    private String departmentName;
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
 
     public String getUsername() {
         return username;
@@ -29,13 +53,6 @@ public class Employee extends Account{
     public void setRole(String role) {
         this.role = role;
     }
-
-    private String name;
-    private String sex;
-    private String no;
-    private Integer age;
-    private String description;
-
 
 
     public Integer getId() {

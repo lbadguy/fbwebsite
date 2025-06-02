@@ -8,9 +8,11 @@
       </div>
       <div style="flex: 1"></div>
       <div style="width: fit-content;display:flex;align-items: center;padding-right:10px  ">
-        <img :src="data.user.avatar || 'https://tse3-mm.cn.bing.net/th/id/OIP-C.mWqbERralY6bvkWEQuhAjwHaIQ?w=152&h=180&c=7&r=0&o=5&pid=1.7'" alt=""
-             style="width: 40px;height: 40px;border-radius: 50%">
-        <span style="color: white;margin-left: 5px">{{ data.user.name}}</span>
+        <img
+            :src="data.user.avatar || 'https://tse3-mm.cn.bing.net/th/id/OIP-C.mWqbERralY6bvkWEQuhAjwHaIQ?w=152&h=180&c=7&r=0&o=5&pid=1.7'"
+            alt=""
+            style="width: 40px;height: 40px;border-radius: 50%">
+        <span style="color: white;margin-left: 5px">{{ data.user.name }}</span>
       </div>
     </div>
     <!--左侧导航-->
@@ -29,7 +31,19 @@
             </el-icon>
             数据统计
           </el-menu-item>
-          <el-sub-menu index="1">
+          <el-menu-item index="/manager/article"  v-if="data.user.role === 'ADM'">
+            <el-icon>
+              <Document/>
+            </el-icon>
+            文章管理
+          </el-menu-item>
+          <el-menu-item index="/manager/department" v-if="data.user.role === 'ADM'">
+            <el-icon>
+              <OfficeBuilding/>
+            </el-icon>
+            部门管理
+          </el-menu-item>
+          <el-sub-menu index="1" v-if="data.user.role === 'ADM'">
             <template #title>
               <el-icon>
                 <User/>
@@ -47,7 +61,7 @@
           </el-menu-item>
           <el-menu-item index="/manager/password">
             <el-icon>
-              <Lock />
+              <Lock/>
             </el-icon>
             修改密码
           </el-menu-item>
@@ -77,7 +91,6 @@ const data = reactive({
 })
 
 
-
 const logout = () => {
   location.href = '/login'
   localStorage.removeItem('xm-pro-user')
@@ -95,6 +108,6 @@ const updateUser = () => {
 }
 
 .el-sub-menu__title {
-  background-color: white ;
+  background-color: white;
 }
 </style>
