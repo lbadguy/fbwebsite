@@ -40,6 +40,7 @@ import router from "@/router/index.js";
 
 const data = reactive({
   form: { role: 'ADMIN',},
+
   rules: {
     username: [
       {required: true, message: '请输入用户名', trigger: 'blur'},

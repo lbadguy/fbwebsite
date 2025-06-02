@@ -51,6 +51,18 @@ const router = createRouter({
                     meta: {title: '修改密码页面'},
                     component: () => import('../views/Password.vue')
                 },
+                {
+                    path: 'article', // 子路由路径会自动继承父路径 (最终路径为 /test)
+                    name: 'article',
+                    meta: {title: '文章页面'},
+                    component: () => import('../views/Article.vue')
+                }, {
+                    path: 'department', // 子路由路径会自动继承父路径 (最终路径为 /test)
+                    name: 'department',
+                    meta: {title: '部门信息'},
+                    component: () => import('../views/Department.vue')
+                },
+
             ]
         },
         {
