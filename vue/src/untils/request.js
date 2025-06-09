@@ -25,18 +25,30 @@ request.interceptors.response.use(
     if (typeof res === 'string') {
         res = res ? JSON.parse(res) : res;
     }
+    
+    // 只有当状态码不是200或0且存在时，才认为是错误
+    if (res.code && res.code !== '200' && res.code !== '0' && res.code !== 200 && res.code !== 0) {
+        ElMessage.error(res.msg || '操作失败');
+    }
+    
+    // 统一处理成功状态码
+    if (res.code === '200' || res.code === 200) {
+        res.code = '0';
+    }
+    
     return res;
 },
     error => {
-    if (error.response.status === 404) {
+    console.error("请求错误", error);
+    if (error.response && error.response.status === 404) {
         ElMessage.error('未找到请求接口');
-    } else if (error.response.status === 500) {
+    } else if (error.response && error.response.status === 500) {
         ElMessage.error('系统异常，请查看后端控制台报错');
     } else {
-        console.error(error.message);
+        ElMessage.error(error.message || '请求失败');
     }
     return Promise.reject(error);
 }
-)
+);
 
 export default request

@@ -33,6 +33,10 @@ public class Result {
         return result;
     }
 
+    public static Result error(String msg) {
+        return error("500", msg);
+    }
+
     public String getCode() {
         return code;
     }

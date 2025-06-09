@@ -60,14 +60,14 @@ const login = () => {
   formRef.value.validate(valid => {
     if (valid) {
       request.post('/login', data.form).then(res => {
-        if (res.code === '200') {
+        if (res.code === '0' || res.code === '200') {
           localStorage.setItem('xm-pro-user', JSON.stringify(res.data))
           ElMessage.success('登录成功')
           setTimeout( () => {
             location.href = '/manager/home'
           },500)
         } else {
-          ElMessage.error(res.msg)
+          ElMessage.error(res.msg || '登录失败')
         }
       })
     }

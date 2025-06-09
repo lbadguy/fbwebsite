@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Mapper.ReaderMapper">
+    <!-- 结果映射 -->
+    <resultMap id="ReaderResultMap" type="com.example.springboot.entity.Reader">
+        <id column="id" property="readerId"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="card_id" property="cardId"/>
+        <result column="type" property="type"/>
+        <result column="max_borrow_num" property="maxBorrowNum"/>
+        <result column="max_borrow_days" property="maxBorrowDays"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+    <!-- 所有字段 -->
+    <sql id="AllColumns">
+        id, user_id, name, gender, card_id, type, max_borrow_num, max_borrow_days, status, create_time, update_time
+    </sql>
+
+    <!-- 添加读者 -->
+    <insert id="insert" parameterType="com.example.springboot.entity.Reader" useGeneratedKeys="true" keyProperty="readerId">
+        INSERT INTO reader (user_id, name, gender, card_id, type, max_borrow_num, max_borrow_days, status)
+        VALUES (#{userId}, #{name}, #{gender}, #{cardId}, #{type}, #{maxBorrowNum}, #{maxBorrowDays}, #{status})
+    </insert>
+
+    <!-- 更新读者 -->
+    <update id="update" parameterType="com.example.springboot.entity.Reader">
+        UPDATE reader
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="maxBorrowNum != null">max_borrow_num = #{maxBorrowNum},</if>
+            <if test="maxBorrowDays != null">max_borrow_days = #{maxBorrowDays},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{readerId}
+    </update>
+
+    <!-- 删除读者 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM reader WHERE id = #{readerId}
+    </delete>
+
+    <!-- 根据ID查询读者 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="ReaderResultMap">
+        SELECT r.*, u.username, u.email, u.phone
+        FROM reader r
+        LEFT JOIN user u ON r.user_id = u.id
+        WHERE r.id = #{readerId}
+    </select>
+
+    <!-- 根据证件号查询读者 -->
+    <select id="selectByCardId" parameterType="java.lang.String" resultMap="ReaderResultMap">
+        SELECT r.*, u.username, u.email, u.phone
+        FROM reader r
+        LEFT JOIN user u ON r.user_id = u.id
+        WHERE r.card_id = #{cardId}
+    </select>
+
+    <!-- 根据用户ID查询读者 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="ReaderResultMap">
+        SELECT r.*, u.username, u.email, u.phone
+        FROM reader r
+        LEFT JOIN user u ON r.user_id = u.id
+        WHERE r.user_id = #{userId}
+    </select>
+
+    <!-- 条件查询读者 -->
+    <select id="selectByCondition" parameterType="com.example.springboot.entity.Reader" resultMap="ReaderResultMap">
+        SELECT r.*, u.username, u.email, u.phone
+        FROM reader r
+        LEFT JOIN user u ON r.user_id = u.id
+        <where>
+            <if test="name != null and name != ''">AND r.name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="cardId != null and cardId != ''">AND r.card_id LIKE CONCAT('%', #{cardId}, '%')</if>
+            <if test="type != null and type != ''">AND r.type = #{type}</if>
+            <if test="status != null">AND r.status = #{status}</if>
+            <if test="username != null and username != ''">AND u.username LIKE CONCAT('%', #{username}, '%')</if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
+
+    <!-- 查询所有读者 -->
+    <select id="selectAll" resultMap="ReaderResultMap">
+        SELECT r.*, u.username, u.email, u.phone
+        FROM reader r
+        LEFT JOIN user u ON r.user_id = u.id
+        ORDER BY r.create_time DESC
+    </select>
+
+    <!-- 更新读者状态 -->
+    <update id="updateStatus">
+        UPDATE reader SET status = #{status} WHERE id = #{readerId}
+    </update>
+</mapper> 

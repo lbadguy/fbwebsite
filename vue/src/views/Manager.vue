@@ -18,13 +18,45 @@
     <!--左侧导航-->
     <div style="display: flex">
       <div style="width: 200px;border-right:1px solid #ddd;min-height:calc(100vh - 60px) ">
-        <el-menu router :default-active="router.currentRoute.value.path" :default-openeds="['1']" style="border: 0">
+        <el-menu router :default-active="router.currentRoute.value.path" :default-openeds="['1', 'book-system']" style="border: 0">
           <el-menu-item index="/manager/home">
             <el-icon>
               <House/>
             </el-icon>
             首页
           </el-menu-item>
+          <el-sub-menu index="book-system">
+            <template #title>
+              <el-icon>
+                <Reading/>
+              </el-icon>
+              <span>图书管理系统</span>
+            </template>
+            <el-menu-item index="/manager/book">
+              <el-icon>
+                <Notebook/>
+              </el-icon>
+              图书管理
+            </el-menu-item>
+            <el-menu-item index="/manager/borrow">
+              <el-icon>
+                <DocumentCopy/>
+              </el-icon>
+              借阅管理
+            </el-menu-item>
+            <el-menu-item index="/manager/reader">
+              <el-icon>
+                <User/>
+              </el-icon>
+              读者管理
+            </el-menu-item>
+            <el-menu-item index="/manager/category">
+              <el-icon>
+                <CollectionTag/>
+              </el-icon>
+              分类管理
+            </el-menu-item>
+          </el-sub-menu>
           <el-menu-item index="/manager/data">
             <el-icon>
               <DataAnalysis/>
@@ -85,6 +117,20 @@
 <script setup>
 import {reactive} from "vue";
 import router from "@/router/index.js";
+import {
+  House,
+  User,
+  UserFilled,
+  Document,
+  DataAnalysis,
+  OfficeBuilding,
+  Lock,
+  SwitchButton,
+  Reading,
+  Notebook,
+  DocumentCopy,
+  CollectionTag
+} from '@element-plus/icons-vue';
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-pro-user'))

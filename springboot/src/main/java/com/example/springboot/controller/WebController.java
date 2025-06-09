@@ -69,11 +69,25 @@ public class WebController {
     public Result getBarData() {
         Map<String, Object> map = new HashMap<>();
         List<Employee> employeeList = employeeService.selectAll(null);
-        Set<String> departmentNameSet = employeeList.stream().map(Employee::getDepartmentName).collect(Collectors.toSet());
+        
+        // 过滤掉departmentName为null的员工，并为null的设置为"未分配部门"
+        employeeList.forEach(employee -> {
+            if (employee.getDepartmentName() == null) {
+                employee.setDepartmentName("未分配部门");
+            }
+        });
+        
+        Set<String> departmentNameSet = employeeList.stream()
+                .map(Employee::getDepartmentName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+                
         map.put("department", departmentNameSet);
         List<Long> countList = new ArrayList<>();
         for (String departmentName : departmentNameSet) {
-            long count = employeeList.stream().filter(employee -> employee.getDepartmentName().equals(departmentName)).count();
+            long count = employeeList.stream()
+                    .filter(employee -> departmentName.equals(employee.getDepartmentName()))
+                    .count();
             countList.add(count);
         }
         map.put("count", countList);
@@ -104,11 +118,25 @@ public class WebController {
     public Result getPieData() {
         List<Map<String, Object>> list = new ArrayList<>();
         List<Employee> employeeList = employeeService.selectAll(null);
-        Set<String> departmentNameSet = employeeList.stream().map(Employee::getDepartmentName).collect(Collectors.toSet());
+        
+        // 过滤掉departmentName为null的员工，并为null的设置为"未分配部门"
+        employeeList.forEach(employee -> {
+            if (employee.getDepartmentName() == null) {
+                employee.setDepartmentName("未分配部门");
+            }
+        });
+        
+        Set<String> departmentNameSet = employeeList.stream()
+                .map(Employee::getDepartmentName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+                
         for (String departmentName : departmentNameSet) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", departmentName);
-            long count = employeeList.stream().filter(employee -> employee.getDepartmentName().equals(departmentName)).count();
+            long count = employeeList.stream()
+                    .filter(employee -> departmentName.equals(employee.getDepartmentName()))
+                    .count();
             map.put("value", count);
             list.add(map);
         }

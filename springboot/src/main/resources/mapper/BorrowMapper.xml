@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Mapper.BorrowMapper">
+    <!-- 结果映射 -->
+    <resultMap id="BorrowResultMap" type="com.example.springboot.entity.Borrow">
+        <id column="id" property="borrowId"/>
+        <result column="book_id" property="bookId"/>
+        <result column="reader_id" property="readerId"/>
+        <result column="borrow_date" property="borrowDate"/>
+        <result column="due_date" property="dueDate"/>
+        <result column="return_date" property="returnDate"/>
+        <result column="status" property="status"/>
+        <result column="fine" property="fine"/>
+        <result column="operator_id" property="operatorId"/>
+        <result column="title" property="bookTitle"/>
+        <result column="isbn" property="isbn"/>
+        <result column="name" property="readerName"/>
+        <result column="card_id" property="cardId"/>
+        <result column="username" property="operatorName"/>
+    </resultMap>
+
+    <!-- 所有字段 -->
+    <sql id="AllColumns">
+        id, book_id, reader_id, borrow_date, due_date, return_date, status, fine, operator_id
+    </sql>
+
+    <!-- 添加借阅记录 -->
+    <insert id="insert" parameterType="com.example.springboot.entity.Borrow" useGeneratedKeys="true" keyProperty="borrowId">
+        INSERT INTO borrow (book_id, reader_id, borrow_date, due_date, status, operator_id)
+        VALUES (#{bookId}, #{readerId}, #{borrowDate}, #{dueDate}, #{status}, #{operatorId})
+    </insert>
+
+    <!-- 更新借阅记录 -->
+    <update id="update" parameterType="com.example.springboot.entity.Borrow">
+        UPDATE borrow
+        <set>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="readerId != null">reader_id = #{readerId},</if>
+            <if test="borrowDate != null">borrow_date = #{borrowDate},</if>
+            <if test="dueDate != null">due_date = #{dueDate},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="fine != null">fine = #{fine},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+        </set>
+        WHERE id = #{borrowId}
+    </update>
+
+    <!-- 删除借阅记录 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM borrow WHERE id = #{borrowId}
+    </delete>
+
+    <!-- 根据ID查询借阅记录 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        WHERE b.id = #{borrowId}
+    </select>
+
+    <!-- 根据图书ID查询借阅记录 -->
+    <select id="selectByBookId" parameterType="java.lang.Long" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        WHERE b.book_id = #{bookId}
+        ORDER BY b.borrow_date DESC
+    </select>
+
+    <!-- 根据读者ID查询借阅记录 -->
+    <select id="selectByReaderId" parameterType="java.lang.Long" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        WHERE b.reader_id = #{readerId}
+        ORDER BY b.borrow_date DESC
+    </select>
+
+    <!-- 根据状态查询借阅记录 -->
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        WHERE b.status = #{status}
+        ORDER BY b.borrow_date DESC
+    </select>
+
+    <!-- 条件查询借阅记录 -->
+    <select id="selectByCondition" parameterType="com.example.springboot.entity.Borrow" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        <where>
+            <if test="bookId != null">AND b.book_id = #{bookId}</if>
+            <if test="readerId != null">AND b.reader_id = #{readerId}</if>
+            <if test="status != null">AND b.status = #{status}</if>
+            <if test="borrowDate != null">AND b.borrow_date = #{borrowDate}</if>
+            <if test="bookTitle != null and bookTitle != ''">AND bk.title LIKE CONCAT('%', #{bookTitle}, '%')</if>
+            <if test="isbn != null and isbn != ''">AND bk.isbn LIKE CONCAT('%', #{isbn}, '%')</if>
+            <if test="readerName != null and readerName != ''">AND r.name LIKE CONCAT('%', #{readerName}, '%')</if>
+            <if test="cardId != null and cardId != ''">AND r.card_id LIKE CONCAT('%', #{cardId}, '%')</if>
+        </where>
+        ORDER BY b.borrow_date DESC
+    </select>
+
+    <!-- 查询所有借阅记录 -->
+    <select id="selectAll" resultMap="BorrowResultMap">
+        SELECT b.*, bk.title, bk.isbn, r.name, r.card_id, u.username
+        FROM borrow b
+        LEFT JOIN book bk ON b.book_id = bk.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        LEFT JOIN user u ON b.operator_id = u.id
+        ORDER BY b.borrow_date DESC
+    </select>
+
+    <!-- 更新借阅状态 -->
+    <update id="updateStatus">
+        UPDATE borrow SET status = #{status} WHERE id = #{borrowId}
+    </update>
+
+    <!-- 更新归还日期和状态 -->
+    <update id="updateReturnInfo">
+        UPDATE borrow 
+        SET return_date = #{returnDate}, status = #{status}, fine = #{fine}
+        WHERE id = #{borrowId}
+    </update>
+
+    <!-- 查询逾期未还的借阅记录 -->
+    <select id="selectOverdue" resultMap="BorrowResultMap">
+        SELECT b.*, book.title, r.name, r.card_id
+        FROM borrow b
+        LEFT JOIN book ON b.book_id = book.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        WHERE b.status = 1 AND b.due_date &lt; CURRENT_DATE()
+    </select>
+    
+    <!-- 根据当前日期查询逾期未还记录（重命名为 selectOverdueByDate） -->
+    <select id="selectOverdueByDate" parameterType="java.util.Date" resultMap="BorrowResultMap">
+        SELECT b.*, book.title, r.name, r.card_id
+        FROM borrow b
+        LEFT JOIN book ON b.book_id = book.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        WHERE b.status = 1 AND b.due_date &lt; #{currentDate}
+    </select>
+    
+    <!-- 根据关键字搜索借阅记录 -->
+    <select id="search" parameterType="java.lang.String" resultMap="BorrowResultMap">
+        SELECT b.*, book.title, r.name, r.card_id
+        FROM borrow b
+        LEFT JOIN book ON b.book_id = book.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        WHERE b.id LIKE CONCAT('%', #{keyword}, '%')
+           OR book.title LIKE CONCAT('%', #{keyword}, '%')
+           OR book.isbn LIKE CONCAT('%', #{keyword}, '%')
+           OR r.name LIKE CONCAT('%', #{keyword}, '%')
+           OR r.card_id LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY b.borrow_date DESC
+    </select>
+    
+    <!-- 根据读者信息搜索借阅记录 -->
+    <select id="searchByReader" parameterType="java.lang.String" resultMap="BorrowResultMap">
+        SELECT b.*, book.title, r.name, r.card_id
+        FROM borrow b
+        LEFT JOIN book ON b.book_id = book.id
+        LEFT JOIN reader r ON b.reader_id = r.id
+        WHERE r.name LIKE CONCAT('%', #{keyword}, '%')
+           OR r.card_id LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY b.borrow_date DESC
+    </select>
+</mapper>

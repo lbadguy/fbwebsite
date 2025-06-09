@@ -62,7 +62,67 @@ const router = createRouter({
                     meta: {title: '部门信息'},
                     component: () => import('../views/Department.vue')
                 },
-
+                // 图书管理系统相关路由
+                {
+                    path: 'book',
+                    name: 'Book',
+                    meta: {title: '图书管理'},
+                    component: () => import('../views/book/Book.vue')
+                },
+                {
+                    path: 'book/add',
+                    name: 'BookAdd',
+                    meta: {title: '添加图书'},
+                    component: () => import('../views/book/BookAdd.vue')
+                },
+                {
+                    path: 'book/edit/:bookId',
+                    name: 'BookEdit',
+                    meta: {title: '编辑图书'},
+                    component: () => import('../views/book/BookEdit.vue')
+                },
+                {
+                    path: 'reader',
+                    name: 'Reader',
+                    meta: {title: '读者管理'},
+                    component: () => import('../views/reader/Reader.vue')
+                },
+                {
+                    path: 'reader/add',
+                    name: 'ReaderAdd',
+                    meta: {title: '添加读者'},
+                    component: () => import('../views/reader/ReaderAdd.vue')
+                },
+                {
+                    path: 'reader/edit/:readerId',
+                    name: 'ReaderEdit',
+                    meta: {title: '编辑读者'},
+                    component: () => import('../views/reader/ReaderEdit.vue')
+                },
+                {
+                    path: 'borrow',
+                    name: 'Borrow',
+                    meta: {title: '借阅管理'},
+                    component: () => import('../views/borrow/Borrow.vue')
+                },
+                {
+                    path: 'borrow/add',
+                    name: 'BorrowAdd',
+                    meta: {title: '添加借阅'},
+                    component: () => import('../views/borrow/BorrowAdd.vue')
+                },
+                {
+                    path: 'borrow/return',
+                    name: 'BorrowReturn',
+                    meta: {title: '归还图书'},
+                    component: () => import('../views/borrow/BorrowReturn.vue')
+                },
+                {
+                    path: 'category',
+                    name: 'Category',
+                    meta: {title: '分类管理'},
+                    component: () => import('../views/category/Category.vue')
+                },
             ]
         },
         {
